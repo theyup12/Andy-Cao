@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
   while((c=fgetc(fin))!= EOF && c==' '{
       ++counter;
   }
+  fputc(c,fout);
   int ntabs =counter /tab_interval;
   int nspaces =counter /tab_interval;
   while(ntabs-- >0){
