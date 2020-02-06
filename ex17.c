@@ -1,32 +1,32 @@
 #include <stdio.h>
-#define MAXLINE 1000
-#define LIMIT 80
 
-int ngetline(char line[], int lim);
+#define MAXLEN 1000
+#define MINLEN 80
 
-int main(void) {
-  int len;
-  char line[MAXLINE];
+int main()
+{
+    int c;
+    int index = 0;
+    char line[MAXLEN];
 
-  while ((len = ngetline(line, MAXLINE)) > 0) {
-    if (len > LIMIT)
-      printf("%s", line);
-  }
+    while ((c = getchar()) != EOF)
+    {
+        if (c != '\n')
+        {
+            line[index] = c;
+            ++index;
+        }
 
-  return 0;
-}
+        else
+        {
+            line[index] = '\0';
 
-int ngetline(char s[], int lim) {
-  int i, c;
-
-  for (i = 0; i < lim - 1 && (c = getchar()) != EOF && c != '\n'; ++i)
-    s[i] = c;
-
-  if (c == '\n') {
-    s[i] = c;
-    ++i;
-  }
-  s[i] = '\0';
-
-  return i;
+            if (index >= MINLEN)
+            {
+                printf("%s\n", line);
+            }
+            index = 0;
+        }
+    }
+    return 0;
 }

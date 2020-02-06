@@ -1,21 +1,21 @@
 #include <stdio.h>
-#define MAXLINE 1000
+#define MAXLINE 500
 
-int igetline(char line[], int lim);
-int removetrail(char rline[]);
+int mgetline(char line[], int lim);
+void removet(char rline[], int length1);
 
-int main(void) {
+int main() {
   int len;
   char line[MAXLINE];
 
-  while ((len = igetline(line, MAXLINE)) > 0)
-    if (removetrail(line) > 0)
-      printf("%s", line);
+  while ((len = mgetline(line, MAXLINE)) > 0)
+    removet(line, len);
+    printf("%s\n", line);
 
   return 0;
 }
 
-int igetline(char s[], int lim) {
+int mgetline(char s[], int lim) {
   int i, c;
 
   for (i = 0; i < lim - 1 && (c = getchar()) != EOF && c != '\n'; ++i)
@@ -29,24 +29,14 @@ int igetline(char s[], int lim) {
   return i;
 }
 
-
-
-int removetrail(char s[]) {
-  int i;
-
-  for (i = 0; s[i] != '\n'; ++i)
-    ;
-  --i; /* To consider raw line without \n */
-
-  for (i > 0; ((s[i] == ' ') || (s[i] == '\t')); --i)
-    ; 
-
-  if (i >= 0) 
-  {
-    ++i;
-    s[i] = '\n';
-    ++i;
-    s[i] = '\0';
+void removet(char s[], int length) {
+  int head, tail;
+  for(head = 0; s[head] ==' '|| s[head]=='\t'; head++);
+  for(tail = length; s[tail] ==' '|| s[tail]== '\t'|| s[tail]== '\n'|| s[tail]== '\0'; --tail);
+  if(tail-head >=0){
+    for(int i = head; i <= tail; i++)
+    putchar(s[i]);
+    putchar('\n');
+    putchar('\0');
   }
-  return i;
 }

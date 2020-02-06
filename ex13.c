@@ -8,7 +8,7 @@ while((c=getchar()) != EOF){
 if (c == ' ' || c== '\n' || c== '\t')
 putchar('\n');
 else
-putchar('*';)
+putchar('*');
 }
 return 0;
 }
