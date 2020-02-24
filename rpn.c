@@ -9,6 +9,7 @@
 #define NUMBER '0' /* signal that a number was found */
 #define MAXVAL 100
 #define MATHNAME 'a'
+
 size_t sp = 0;      // aka unsigned long -- printf using %zu
 double val[MAXVAL]; // stack of values
 
@@ -28,27 +29,28 @@ int getop(char *s) {
   while ((s[0] = c = getch_()) == ' ' || c == '\t') {
   } // skip whitespace
   s[1] = '\0';
-
+  i = 0;
+  if(islower(c)){
+    while(islower(s[++i] = c = getch_())){ }
+    s[i] = '\0';
+    if(c != EOF){ungetch_(c);}
+    if(strlen(s) > 0){ return MATHNAME;}
+  }
   if (!isdigit(c) && c != '.') {
     return c;
   } // if not a digit, return
-
-  i = 0;
-  if (isdigit(c)) { // get digits before '.'
-    while (isdigit(s[++i] = c = getch_())) {
-    }
+  if(isdigit(c)){
+    while(isdigit(s[++i] = c = getch_())){}
   }
+
   if (c == '.') { // get digits after decimal (if any)
-    while (isdigit(s[++i] = c = getch_())) {
-    }
+    while (isdigit(s[++i] = c = getch_())) {}
   }
   s[i] = '\0';
   if (c != EOF) {
     ungetch_(c);
   }
   return NUMBER; // return type is NUMBER, number stored in s
-  if(strlen(s) > 1)
-  return MATHNAME;
 }
 
 double pop(void) {
@@ -66,7 +68,6 @@ void push(double f) {
   }
   val[sp++] = f;
 }
-void clears(void) { sp = 0; }
 void swap(void) {
   double s;
   int i;
@@ -75,7 +76,7 @@ void swap(void) {
   val[i - 1] = val[i];
   val[i] = s;
 }
-void mathFunction(char *s) {
+void mathFunction(char *s) { // exercise 4.5
   double op2;
   if (strcmp(s, "sin") == 0) {
     push(sin(pop()));
@@ -89,10 +90,11 @@ void mathFunction(char *s) {
   }
 }
 void rpn(void) {
-  int type, var =0;
+  int type, var = 0;
   double op2, v;
   char s[BUFSIZ];
   double variable[26];
+  for (int i = 0; i < 26; i++) { variable[i] = 0.0; }
   while ((type = getop(s)) != EOF) {
     switch (type) {
     case '\n':
@@ -102,8 +104,9 @@ void rpn(void) {
     case NUMBER:
       push(atof(s));
       break;
-    case MATHNAME:
+    case MATHNAME: // exercise 4.5
       mathFunction(s);
+      break;
     case '+':
       push(pop() + pop());
       break;
@@ -120,43 +123,45 @@ void rpn(void) {
       }
       push(pop() / op2);
       break;
-    case '%':
+    case '%': // excersice 4.3
       if ((op2 = pop()) == 0.0) {
         fprintf(stderr, "error, modulus by zero");
         break;
       }
       push(fmod(pop(), op2));
       break;
-    case '?':
+    case '?': // exercise 4.4
       op2 = pop();
       printf("\t%.8g\n", op2);
       push(op2);
       break;
-    case '$':
-      push(pop());
-      push(pop());
+    case '$': // exercise 4.4
+      op2 = pop();
+      push(op2);
+      push(op2);
       break;
-    case '@':
+    case '@': // exercise 4.4
       swap();
       break;
-    case '!':
-      clears();
+    case '!': // exercise 4.4
+      sp = 0;
       break;
-    case '=':
+    case '=': // exercise 4.6
       pop();
-      if(var >= 'A' && var <= 'Z')
+      if (var >= 'A' && var <= 'Z')
         variable[var - 'A'] = pop();
       else
-      printf("error: no variable");
+        printf("error: no variable");
       break;
     default:
-    if(var >= 'A' && var <= 'Z'){
+      if (type >= 'A' && type <= 'Z') {
         push(variable[type - 'A']);
-    }else if(type == 'v'){
-      push(v);
-    }else{
-      fprintf(stderr, "unknown command %s\n", s);
-      break;}
+      } else if (type == 'v') {
+        push(v);
+      } else {
+        fprintf(stderr, "unknown command %s\n", s);
+        break;
+      }
     }
     var = type;
   }
