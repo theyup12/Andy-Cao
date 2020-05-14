@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
   vector<int> arguments(argv, argv + argc);
 
-  vector<int> vec{1, 2, 3, 4, 51, 49};
+  vector<int> vec;
   for (int i = 1; i <= 6; ++i) {
     vec.push_back(arguments.at(i));
   }
